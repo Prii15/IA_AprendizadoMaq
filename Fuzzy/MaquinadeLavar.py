@@ -27,15 +27,15 @@ spin = control.Consequent(np.arange(0, 180, 1), 'spin')
 
 tc['thin'] = skfuzzy.trimf(tc.universe, [-50, 0, 50])
 tc['thick'] = skfuzzy.trimf(tc.universe, [20, 50, 80])
-tc['jeans'] = skfuzzy.trimf(tc.universe, [50, 100, 150])
+tc['jean'] = skfuzzy.trimf(tc.universe, [50, 100, 150])
 
-ac['pouca'] = skfuzzy.trimf(ac.universe, [-5, 0, 5])
-ac['media'] = skfuzzy.trimf(ac.universe, [2, 5, 8])
-ac['muita'] = skfuzzy.trimf(ac.universe, [5, 10, 15])
+ac['little'] = skfuzzy.trimf(ac.universe, [-5, 0, 5])
+ac['normal'] = skfuzzy.trimf(ac.universe, [2, 5, 8])
+ac['large'] = skfuzzy.trimf(ac.universe, [5, 10, 15])
 
-ad['pouca'] = skfuzzy.trimf(ad.universe, [-50, 0, 50])
-ad['media'] = skfuzzy.trimf(ad.universe, [20, 50, 80])
-ad['muita'] = skfuzzy.trimf(ad.universe, [50, 100, 150])
+ad['small'] = skfuzzy.trimf(ad.universe, [-50, 0, 50])
+ad['normal'] = skfuzzy.trimf(ad.universe, [20, 50, 80])
+ad['large'] = skfuzzy.trimf(ad.universe, [50, 100, 150])
 
 # Rinse time very small, small, normal, long, and very long are [-12.5 0 12.5], [0 12.5 25],
 # [15 25 35], [25 35 45], [40 60 80].
@@ -59,7 +59,7 @@ spin['verysmall'] = skfuzzy.trimf(spin.universe, [0, 0, 40])
 spin['small'] = skfuzzy.trimf(spin.universe, [30, 52.5, 75])
 spin['normal'] = skfuzzy.trimf(spin.universe, [50, 75, 100])
 spin['large'] = skfuzzy.trimf(spin.universe, [75, 107.5, 140])
-spin['verylarge'] = skfuzzy.trimf(spin.universe, [120, 180, 180])
+spin['verylarge'] = skfuzzy.trimf(spin.universe, [120, 180, 480])
 
 tc.view()
 ac.view()
@@ -67,9 +67,6 @@ ad.view()
 rinse.view()
 wash.view()
 spin.view()
-plt.show()
-
-input()
 
 regra1 = control.Rule(ac['large'] & ad['large'], rinse['long'])
 regra2 = control.Rule(ac['little'] & ad['small'], rinse['verysmall'])
@@ -105,3 +102,12 @@ regras = control.ControlSystem([regra1, regra2, regra3, regra4, regra5, regra6, 
 
 resultado = control.ControlSystemSimulation(regras)
 
+resultado.input['tc'] = 80
+resultado.input['ac'] = 12
+resultado.input['ad'] = 50
+
+resultado.compute()
+
+print(resultado.output['spin'])
+spin.view(sim=resultado)
+input()
